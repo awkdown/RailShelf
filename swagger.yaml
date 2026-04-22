@@ -1,0 +1,244 @@
+openapi: 3.0.3
+info:
+  title: RailShelf API
+  description: |
+    API for managing a personal railway book collection.  
+    Built as part of **COM5409 — Web Design & Programming**.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+
+tags:
+  - name: Books
+    description: Manage your railway book collection
+
+paths:
+  /api/books:
+    get:
+      tags: [Books]
+      summary: Get all books
+      description: Returns the full collection. Optionally filter by a search term or category.
+      parameters:
+        - name: search
+          in: query
+          required: false
+          description: Filter by title, author, or ISBN (case-insensitive)
+          schema:
+            type: string
+            example: "signalling"
+        - name: category
+          in: query
+          required: false
+          description: Filter by category (case-insensitive)
+          schema:
+            type: string
+            example: "History"
+      responses:
+        "200":
+          description: A list of books
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Book"
+
+    post:
+      tags: [Books]
+      summary: Add a new book
+      description: Creates a new book entry. Title and author are required; all other fields are optional.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewBook"
+            example:
+              title: "The Railways of Britain"
+              author: "Jack Simmons"
+              isbn: "978-0-333-14297-4"
+              publisher: "Macmillan"
+              year: 1986
+              category: "History"
+              status: "wishlist"
+      responses:
+        "201":
+          description: Book created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        "400":
+          description: Validation error (missing title or author)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/books/{id}:
+    get:
+      tags: [Books]
+      summary: Get a single book
+      description: Returns a single book by its ID.
+      parameters:
+        - $ref: "#/components/parameters/BookId"
+      responses:
+        "200":
+          description: The requested book
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        "404":
+          description: Book not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    patch:
+      tags: [Books]
+      summary: Update a book
+      description: Partially updates a book. Only the fields included in the request body will be changed.
+      parameters:
+        - $ref: "#/components/parameters/BookId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateBook"
+            example:
+              status: "lent out"
+      responses:
+        "200":
+          description: The updated book
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        "404":
+          description: Book not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    delete:
+      tags: [Books]
+      summary: Delete a book
+      description: Permanently removes a book from the collection by its ID.
+      parameters:
+        - $ref: "#/components/parameters/BookId"
+      responses:
+        "200":
+          description: Book deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Book deleted"
+                  book:
+                    $ref: "#/components/schemas/Book"
+        "404":
+          description: Book not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  parameters:
+    BookId:
+      name: id
+      in: path
+      required: true
+      description: The numeric ID of the book
+      schema:
+        type: integer
+        example: 1
+
+  schemas:
+    Book:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Auto-generated unique identifier
+          example: 1
+        title:
+          type: string
+          example: "British Railway Signalling"
+        author:
+          type: string
+          example: "Geoffrey Kichenside & Alan Williams"
+        isbn:
+          type: string
+          example: "978-0-7110-0898-0"
+        publisher:
+          type: string
+          example: "Ian Allan"
+        year:
+          type: integer
+          example: 1963
+        category:
+          type: string
+          example: "Signalling"
+        status:
+          type: string
+          enum: [owned, wishlist, lent out]
+          example: "owned"
+
+    NewBook:
+      type: object
+      required:
+        - title
+        - author
+      properties:
+        title:
+          type: string
+        author:
+          type: string
+        isbn:
+          type: string
+        publisher:
+          type: string
+        year:
+          type: integer
+        category:
+          type: string
+        status:
+          type: string
+          enum: [owned, wishlist, lent out]
+
+    UpdateBook:
+      type: object
+      description: Any subset of book fields to update
+      properties:
+        title:
+          type: string
+        author:
+          type: string
+        isbn:
+          type: string
+        publisher:
+          type: string
+        year:
+          type: integer
+        category:
+          type: string
+        status:
+          type: string
+          enum: [owned, wishlist, lent out]
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Book with id 99 not found"
