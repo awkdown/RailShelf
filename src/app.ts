@@ -7,6 +7,7 @@ import {validateBook, validateBookUpdate} from "./middleware/validateBook";
 import {errorHandler} from "./middleware/errorHandler";
 import authRouter from './routes/auth';
 import { sanitiseBody } from './middleware/sanitise';
+import cors from "cors";
 
 const app = express();
 
@@ -19,6 +20,16 @@ app.use(express.json());
 
 // Sanitise all incoming string fields
 app.use(sanitiseBody);
+
+// Allow the frontend to make cross-origin requests to this API.
+// In production, FRONTEND_URL will be set to your Vercel URL.
+// In development, it falls back to localhost:5173 (Vite's dev server).
+app.use(
+    cors({
+        origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    })
+);
+
 
 // Authentication routes
 app.use('/auth', authRouter);
@@ -41,6 +52,17 @@ app.use(express.static('public'));
 app.get("/", (_req, res) => {
     res.sendFile(path.join(__dirname, "..", "public", "index.html"));
 });
+
+// Health check endpoint
+// Hosting platforms ping this URL to verify the server is alive.
+// Returns a simple JSON object with the current status and timestamp.
+app.get("/health", (req, res) => {
+    res.json({
+        status: "ok",
+        timestamp: new Date().toISOString(),
+    });
+});
+
 
 // Return all books as JSON
 app.get("/api/books", async (req, res) => {
