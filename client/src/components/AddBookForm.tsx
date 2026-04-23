@@ -1,4 +1,5 @@
 import { useState, type SyntheticEvent } from 'react';
+import { API_BASE } from '../config';
 
 interface AddBookFormProps {
     onBookAdded: () => void;
@@ -26,7 +27,7 @@ export default function AddBookForm(
         // Send the form data to our POST endpoint.
         // Note the x-api-key header — our requireApiKey
         // middleware rejects requests without it.
-        const res = await fetch('/api/books', {
+        const res = await fetch(`${API_BASE}/api/books`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

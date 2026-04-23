@@ -1,5 +1,6 @@
 import { useState, type SyntheticEvent } from 'react';
 import type { Book } from '../types/Book';
+import { API_BASE } from '../config';
 
 interface EditBookFormProps {
     book: Book;
@@ -26,7 +27,7 @@ export default function EditBookForm(
 
         // PATCH sends the fields we want to update.
         // The server merges them with the existing record.
-        const res = await fetch(`/api/books/${book.id}`, {
+        const res = await fetch(`${API_BASE}/api/books/${book.id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',

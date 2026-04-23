@@ -1,4 +1,5 @@
 import {useState,  type SyntheticEvent} from 'react';
+import { API_BASE } from '../config';
 
 interface LoginFormProps {
     onLogin: (token: string) => void;
@@ -13,7 +14,7 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
         e.preventDefault();
         setError('');
 
-        const res = await fetch('/auth/login', {
+        const res = await fetch(`${API_BASE}/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password }),

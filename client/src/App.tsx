@@ -4,6 +4,7 @@ import type {Book} from './types/Book';
 import AddBookForm from './components/AddBookForm';
 import EditBookForm from './components/EditBookForm';
 import LoginForm from "./components/LoginForm.tsx";
+import { API_BASE } from './config';
 
 function App() {
     const [books, setBooks] = useState<Book[]>([]);
@@ -31,7 +32,7 @@ function App() {
             if (search) params.set('search', search);
             if (category) params.set('category', category);
 
-            const res = await fetch(`/api/books?${params}`);
+            const res = await fetch(`${API_BASE}/api/books?${params}`);
             const data = await res.json();
             setBooks(data);
         } catch (err) {
@@ -49,7 +50,7 @@ function App() {
             return;
         }
 
-        const res = await fetch(`/api/books/${id}`, {
+        const res = await fetch(`${API_BASE}/api/books/${id}`, {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${token}` },
         });
