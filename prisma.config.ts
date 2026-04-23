@@ -7,6 +7,10 @@ export default defineConfig({
   schema: "prisma/schema.prisma",
   migrations: {
     path: "prisma/migrations",
+    // This tells Prisma which command to run when you execute
+    // 'npx prisma db seed'. It uses npx to find tsx in your
+    // local node_modules, then runs the seed script.
+    seed: "npx tsx prisma/seed.ts",
   },
   datasource: {
     url: process.env["DATABASE_URL"],
