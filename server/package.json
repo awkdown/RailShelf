@@ -11,6 +11,9 @@
     "dev": "ts-node src/server.ts",
     "start": "node dist/server.js"
   },
+  "prisma": {
+    "schema": "src/prisma/schema.prisma"
+  },
   "dependencies": {
     "@prisma/adapter-pg": "^7.5.0",
     "@prisma/client": "^7.5.0",
