@@ -9,7 +9,7 @@ yarn-error.log*
 .pnp.js
 
 .vscode/*
-/src/generated/prisma
+/server/src/generated/prisma
 
 .env
 dist/
