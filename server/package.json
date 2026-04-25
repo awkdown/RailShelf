@@ -12,7 +12,7 @@
     "start": "node dist/server.js"
   },
   "prisma": {
-    "schema": "src/server/prisma/schema.prisma"
+    "schema": "server/src/prisma/schema.prisma"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.5.0",
