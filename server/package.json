@@ -8,8 +8,8 @@
     "test:watch": "../node_modules/.bin/jest --watch",
     "test:coverage": "../node_modules/.bin/jest --coverage",
     "build": "npx tsc",
-    "dev": "ts-node src/server/server.ts",
-    "start": "node dist/server/server.js"
+    "dev": "ts-node src/server.ts",
+    "start": "node dist/server.js"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.5.0",
